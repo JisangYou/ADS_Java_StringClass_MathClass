@@ -1,9 +1,10 @@
 # ADS04 Java 
 
 ## 수업 내용
-- String Api 학습
+- String class 학습
+- Math class 학습
 
-## Code Review
+## Code Review String Class
 
 ### String Api
 
@@ -117,17 +118,165 @@ StringBuilder는 스레드에 안전한지 여부가 전혀 관계 없는 프로
 
 출처: http://12bme.tistory.com/42 [goorm>=5; 길은 가면, 뒤에 있다]
 
+-----------------------------------------------------------------------------------------------------------------------------------------------
+
+## Code Review Math Class
+
+### Math Class
+
+```Java
+public void testMath() {
+		// 절대값 구하기
+		int a = Math.abs(-123);// static으로 선언되어있는 경우 Math math = new Math();가 안됨
+		// 반올림
+		long b = Math.round(123.5);
+		// 올림
+		double c = Math.ceil(343.1543);
+		// 내림
+		double d = Math.floor(563.8);
+
+		System.out.println("절대값" + a + b + c + d);
+
+		Math.random(); // 0보다 크거나 같고 1보다 작은 실수를 리턴
+
+		Random random = new Random();
+		// 1부터 100사이의 랜덤한 숫자 가져오기
+
+		random.nextInt(100); // ->0~99 사이의 정수가 리턴
+		int r = random.nextInt(100) + 1;
+ }
+```
+
+### SUM 
+
+1. 총합 구하기(가우스 방정식을 활용)
+
+```Java
+public long sum(long max) {
+
+		long result = 0;
+		result = max * (max + 1) / 2;
+		return result;
+	}
+```
+- for문을 사용하는 것보다 성능이 우수
+
+2. 홀수 더하기
+
+```Java
+	public long sumOdd(long max) {// 홀수일때,
+
+		if (max % 2 == 1) //예외처리
+			max = max + 1; // 7일때는 8이 나와도 상관없이 7부터 더하므로 상관없음.
+		long count = max / 2;
+		return count * count;
+
+	}
+```
+- 패턴을 활용함. 개수*2
+
+3. 짝수 더하기
+
+```Java
+	public long sumEven(long max) {// 짝수일때,
+
+		// 2+4=6, 2+4+6=12, 2+4+6+8=20....
+				// 개수 n * n+1 = 결과 도출
+
+		if (max % 2 == 1) //예외처리
+			max = max - 1; // 9일때는 8부터 더해야하므로 -1
+		long count = max / 2; //개수
+		return count * count + count;
+
+	}
+```
+-패턴을 활용함. 개수*개수+1
+
+### lotto program
+
+1. case 1
+
+```Java
+public int[] getLottoNumber() {
+
+		int[] result = new int[6];
+		Random random = new Random();
+
+		for (int index = 0; index < result.length; index++) {
+			// random 함수에서 발생되는 난수는 중복될 수 있다.
+			// 아래예제에서 결과값이 처음에 33이 나왔을 경우
+			// 두 번째 케이스에서도 33이 나올 수 있다.
+			result[index] = random.nextInt(45) + 1;
+			// 중복값에 대한 예외처리
+			for (int j = 0; j < index; j++) {
+				if (result[index] == result[j]) {
+					index--;
+					break;
+				}
+			}
+		}
+
+		return result;
+	}
+```
+-for문이 한번 돌때 배열크기만큼 랜덤값 생성하나, 중복처리를 위해 for문 한번 더 생성
+
+2. case 2
+
+```Java
+public int[] lottoNumbers2() {
+		int[] result = new int[6];
+
+		Random random = new Random();
+		int temp = 0;
+		int cnt = 0;
+		for (int i = 0; i < result.length; i++) {
+			temp = random.nextInt(45) + 1;
+			if (cnt > 0) {
+				for (int item : result) {
+					while (item == temp) {
+						temp = random.nextInt(45) + 1;
+					}
+				}
+			}
+			result[cnt] = temp;
+			cnt++;
+		}
+		return result;
+	}
+```
+
+
+## 보충설명
+
+- Math 클래스는 수학적 연산과 관련된 메소들을 제공하는 클래스로 random() 메소드를 사용하여 0.0 <= double value <1.0의 값을 생성할 수 있다.
+
+- Randome 클래스로 무작위 난수를 생성할 수 있음.
+ex) 
+```Java
+random.nextInt(10) + 1; 
+```
+이런식으로 next타입(갯수)로 사용한다.  
+
+- for 문을 돌때 조건 모두를 공란으로 할 수 있음. 
+```Java
+for (/* 시작값 */; 6 > treeSet
+				.size(); 
+        /* 세개의 식 모두 공란으로 둘 수 있음, 증감값 안써도 된다. */) {
+				}
+```
+
+
 ## TODO
 
-- 시간이 날때 Java내부 다양한 api를 공부해보기
-- 깊게는 이해를 못하더라도, 어느 api가 있다라는 정도는 파악해둘 필요성이 있음.
-- 알고리즘을 많이 풀면서 해당 api들을 적용시켜보는 연습을 하기
-- 해당 프로젝트에 있는 알고리즘 공부하기
+- 유용하게 쓰일만한 클래스인 것 같다. 자바에서 제공하는 다양한 클래스들에 대한 공부가 필요
+
+- 알고리즘 연습
+
 
 ## Retrospect
 
-- 학원을 다니면서 알고리즘 문제를 처음으로 접했을 때, 해당 api들이 굉장히 중요하다는 것을 느꼈다.
-- 그동안 따로 알고리즘 문제를 풀어보지 않아 처음에는 많이 어려웠는데, 알고리즘을 계속 풀다보니 해당 api가 눈에는 익었으나 부족한 점이 여전히 있음
+- 알고리즘을 계속해서 공부해야 이러한 클래스들도 능수능란하게 사용할 수 있을 것 같다.
 
 
 ## Output
